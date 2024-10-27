@@ -1,47 +1,46 @@
 #!/usr/bin/python3
+
 """
-Script to parse and display log statistics
+Script reads input line-by-line and computes log metrics.
 """
 
 import sys
-import re
 
+line_total = 0
+file_size_sum = 0
 
-def display_log_stats(stats: dict) -> None:
-    """
-    Display the file size and status code frequencies
-    """
-    print("File size: {}".format(stats["file_size"]))
-    for status_code in sorted(stats["code_counts"]):
-        if stats["code_counts"][status_code]:
-            print("{}: {}".format(status_code, stats["code_counts"][status_code]))
+code_counts = {
+    "200": 0, "301": 0,
+    "400": 0, "401": 0,
+    "403": 0, "404": 0,
+    "405": 0, "500": 0
+}
 
+try:
+    for input_line in sys.stdin:
+        fields = input_line.split(' ')
 
-if __name__ == "__main__":
-    log_pattern = re.compile(
-        r'(\d{1,3}\.){3}\d{1,3} - \[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d+\] "GET /projects/260 HTTP/1.1" (\d{3}) (\d+)'  # noqa: E501
-    )
+        if len(fields) > 2:
+            code = fields[-2]
+            size = fields[-1]
 
-    line_total = 0
-    stats = {"file_size": 0, "code_counts": {str(code): 0 for code in (200, 301, 400, 401, 403, 404, 405, 500)}}
+            if code in code_counts:
+                code_counts[code] += 1
+            file_size_sum += int(size)
+            line_total += 1
 
-    try:
-        for input_line in sys.stdin:
-            input_line = input_line.strip()
-            log_match = log_pattern.fullmatch(input_line)
-            if log_match:
-                line_total += 1
-                status_code = log_match.group(2)
-                size = int(log_match.group(3))
+            if line_total == 10:
+                print('File size: {:d}'.format(file_size_sum))
+                for key in sorted(code_counts):
+                    if code_counts[key] > 0:
+                        print('{}: {}'.format(key, code_counts[key]))
+                line_total = 0
 
-                # Update file size
-                stats["file_size"] += size
+except KeyboardInterrupt:
+    print("\nUser interruption detected.")
 
-                # Update status code count
-                if status_code in stats["code_counts"]:
-                    stats["code_counts"][status_code] += 1
-
-                if line_total % 10 == 0:
-                    display_log_stats(stats)
-    finally:
-        display_log_stats(stats)
+finally:
+    print("File size: {:d}".format(file_size_sum))
+    for key in sorted(code_counts):
+        if code_counts[key] > 0:
+            print("{}: {}".format(key, code_counts[key]))
