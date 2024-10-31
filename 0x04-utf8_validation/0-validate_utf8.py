@@ -2,26 +2,26 @@
 """UTF-8 Encoding Validation"""
 
 
-def count_leading_ones(byte):
-    """Count leading 1-bits in a byte."""
-    leading_ones = 0
+def count_initial_ones(byte):
+    """Counts leading 1-bits in an integer."""
+    count = 0
     mask = 1 << 7
     while mask & byte:
-        leading_ones += 1
+        count += 1
         mask >>= 1
-    return leading_ones
+    return count
 
 
-def is_valid_utf8(data):
-    """Check if a list of bytes represents valid UTF-8 encoding."""
+def validUTF8(data):
+    """Checks if a list of integers is valid UTF-8 encoded data."""
     remaining_bytes = 0
     for byte in data:
         if remaining_bytes == 0:
-            leading_ones = count_leading_ones(byte)
+            leading_ones = count_initial_ones(byte)
             # Single-byte character (0xxxxxxx)
             if leading_ones == 0:
                 continue
-            # UTF-8 characters are between 1 and 4 bytes long
+            # UTF-8 encoding limits characters to 1 to 4 bytes
             if leading_ones == 1 or leading_ones > 4:
                 return False
             remaining_bytes = leading_ones - 1
