@@ -1,29 +1,29 @@
 #!/usr/bin/python3
 """
-Module for N-Queens Problem Solution.
-For solving and printing possible board arrangements.
+Solves the N Queens puzzle where N non-attacking queens
+are placed on an N×N chessboard.
 """
 from sys import argv, exit
 
 
-def n_queens_solution(size):
-    """Generates solutions to the N-Queens puzzle"""
+def place_n_queens(size):
+    """Solves the N queens challenge and returns solutions"""
     solutions = []
     positions = [-1] * size
-    # 'positions' is a 1D array where index is row and value is column.
+    # 'positions' represents the queen's column position per row
 
     def search(row):
-        """Recursive function for solving N-Queens using backtracking"""
-        if row == len(positions):  # all queens are placed correctly
+        """Recursively searches for valid queen placements"""
+        if row == len(positions):  # all queens are correctly placed
             solutions.append(positions[:])
             return
         for col in range(len(positions)):
             positions[row] = col
-            if is_safe(row):  # checks safety of queen's position
+            if is_safe(row):  # ensures no attacks
                 search(row + 1)
 
     def is_safe(current_row):
-        """Verifies no queens are attacking each other"""
+        """Checks if the queen at current_row is safe"""
         for prev_row in range(current_row):
             if positions[prev_row] == positions[current_row]:  # same column
                 return False
@@ -32,11 +32,11 @@ def n_queens_solution(size):
         return True
 
     def format_solutions(solutions):
-        """Formats the solution into a list of board positions"""
+        """Formats solutions for display"""
         boards = []
-        for queens in solutions:
+        for solution in solutions:
             board = []
-            for row, col in enumerate(queens):
+            for row, col in enumerate(solution):
                 board.append([row, col])
             boards.append(board)
         return boards
@@ -59,6 +59,6 @@ if __name__ == "__main__":
         print('N must be at least 4')
         exit(1)
     else:
-        results = n_queens_solution(size)
+        results = place_n_queens(size)
         for solution in results:
             print(solution)
