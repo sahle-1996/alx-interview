@@ -1,26 +1,26 @@
-#!/usr/bin/env python3
-"""Change Maker Module"""
+#!/usr/bin/python3
+"""Making change with minimal coins"""
 
 
 def makeChange(coins, total):
-    """Calculate the minimum coins to meet a total.
+    """Determine the fewest coins needed to meet a given total
 
     Args:
-        coins (list): Available denominations of coins.
-        total (int): The total amount to make change for.
+        coins (list): Values of coins available
+        total (int): Target amount to reach
 
     Returns:
-        int: Minimum number of coins needed, or -1 if not possible.
+        int: Fewest number of coins, or -1 if not possible
     """
     if total <= 0:
         return 0
+    coins.sort(reverse=True)
     remaining = total
     count = 0
-    coins = sorted(coins, reverse=True)
     for coin in coins:
-        while remaining >= coin:
-            remaining -= coin
-            count += 1
-        if remaining == 0:
-            return count
-    return -1
+        if remaining <= 0:
+            break
+        used = remaining // coin
+        count += used
+        remaining -= used * coin
+    return count if remaining == 0 else -1
