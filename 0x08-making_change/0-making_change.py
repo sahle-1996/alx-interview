@@ -1,26 +1,25 @@
-#!/usr/bin/env python3
-"""Coin change problem solver"""
+#!/usr/bin/python3
+""" Making changes """
 
 
 def makeChange(coins, total):
-    """Calculate the minimum coins needed for a given total.
+    """ Generate changes needed to reach total
 
     Args:
-        coins (list): List of available coin denominations.
-        total (int): The amount to achieve using the coins.
-
-    Returns:
-        int: Minimum number of coins needed or -1 if not possible.
+        coins ([List]): [List of Coins available]
+        total ([int]): [total amount needed]
     """
     if total <= 0:
         return 0
-    current_sum = 0
-    coin_count = 0
-    coins = sorted(coins, reverse=True)
-    for coin in coins:
-        while current_sum + coin <= total:
-            current_sum += coin
-            coin_count += 1
-        if current_sum == total:
-            return coin_count
+    check = 0
+    temp = 0
+    coins.sort(reverse=True)
+    for i in coins:
+        while check < total:
+            check += i
+            temp += 1
+        if check == total:
+            return temp
+        check -= i
+        temp -= 1
     return -1
