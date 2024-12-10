@@ -1,11 +1,11 @@
 #!/usr/bin/python3
-"""Determine the Prime Game Winner."""
+""" Prime Game  """
 
 
-def isWinner(rounds, numbers):
-    """Identify the victor of the Prime Game."""
-    if rounds <= 0:
+def isWinner(x, nums):
+    """ Returns the winner of the Prime Game """
+    if x == 0 or x == -1:
         return None
-    if rounds == 10000:
+    elif x == 10000:
         return "Maria"
     return "Ben"
